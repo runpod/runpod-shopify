@@ -1,0 +1,74 @@
+{% comment %}
+  Ultra-minimal footer
+{% endcomment %}
+
+<footer class="minimal-footer page-width">
+  <!-- footer-top logo removed -->
+  <div class="footer-links">
+    <div class="footer-col">
+      <h4>Boring stuff</h4>
+      <ul>
+        <li><a href="#">Terms of use</a></li>
+        <li><a href="#">Privacy policy</a></li>
+        <li><a href="#">Purchasing policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Follow</h4>
+      <ul>
+        <li><a href="https://x.com/runpod_io" target="_blank" rel="noopener">X / Twitter</a></li>
+        <li><a href="https://www.linkedin.com/company/runpod-io/" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://www.youtube.com/@RunPodIO" target="_blank" rel="noopener">YouTube</a></li>
+        <li><a href="https://docs.runpod.io/overview" target="_blank" rel="noopener">Docs</a></li>
+        <li><a href="https://www.runpod.io" target="_blank" rel="noopener">Runpod.io</a></li>
+      </ul>
+    </div>
+  </div>
+  <small class="copy"
+    >&copy; {{ 'now' | date: '%Y' }}
+    {{ shop.name -}}
+  </small>
+  <style>
+    .minimal-footer {
+      padding: 2rem 0;
+      text-align: center;
+      font-size: 1.3rem;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 6rem;
+      font-size: 1.3rem;
+    }
+    .footer-links ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .footer-links a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .footer-col h4 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+    }
+    .copy {
+      font-size: 1.2rem;
+    }
+  </style>
+</footer>
+
+{% schema %}
+{
+  "name": "Minimal footer",
+  "tag": "section",
+  "class": "section-minimal-footer",
+  "settings": []
+}
+{% endschema %}

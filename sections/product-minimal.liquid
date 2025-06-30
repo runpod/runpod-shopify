@@ -1,0 +1,170 @@
+{% comment %}Minimal product page section{% endcomment %}
+<section class="product-minimal page-width">
+  <div class="product-wrapper">
+    <div class="product-gallery">
+      {%- for media in product.media -%}
+        {%- if forloop.first -%}
+          <img
+            src="{{ media | image_url: width: 800 }}"
+            alt="{{ product.title | escape }}"
+            width="800"
+            height="{{ 800 | divided_by: media.aspect_ratio }}"
+            class="main-img"
+          >
+        {%- endif -%}
+      {%- endfor -%}
+      <button class="nav-arrow prev" aria-label="Previous">&#10094;</button>
+      <button class="nav-arrow next" aria-label="Next">&#10095;</button>
+    </div>
+    <div class="product-info">
+      <h1 class="product-title">{{ product.title }}</h1>
+      <p class="product-price">{{ product.price | money }}</p>
+      {% form 'product', product %}
+        {%- if product.options.size > 0 -%}
+          <label for="variant-select" class="visually-hidden">Size</label>
+          <select id="variant-select" name="id" class="variant-select">
+            {%- for variant in product.variants -%}
+              <option
+                value="{{ variant.id }}"
+                {% if variant == product.selected_or_first_available_variant %}
+                  selected
+                {% endif %}
+              >
+                {{ variant.title }}
+              </option>
+            {%- endfor -%}
+          </select>
+        {%- else -%}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        {%- endif -%}
+        <button type="submit" class="add-to-cart">Add to cart</button>
+      {% endform %}
+      <div class="product-description rte">{{ product.description }}</div>
+    </div>
+  </div>
+  <div class="product-thumbs">
+    {%- for media in product.media -%}
+      <img
+        src="{{ media | image_url: width: 160 }}"
+        data-src="{{ media | image_url: width: 800 }}"
+        alt="{{ product.title | escape }} thumbnail"
+        width="80"
+        height="80"
+      >
+    {%- endfor -%}
+  </div>
+  <style>
+    .product-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    @media (min-width: 750px) {
+      .product-wrapper {
+        flex-direction: row;
+      }
+    }
+    .product-gallery img {
+      width: 100%;
+      height: auto;
+    }
+    @media (min-width: 750px) {
+      .product-gallery {
+        max-width: 400px;
+      }
+    }
+    .product-title {
+      font-size: 2rem;
+      margin: 0 0 1rem;
+    }
+    .product-price {
+      font-size: 1.5rem;
+      margin: 0 0 1.5rem;
+    }
+    .variant-select {
+      padding: 0.6rem;
+      font-size: 1rem;
+      margin-right: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .add-to-cart {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      background: #000;
+      color: #fff;
+      cursor: pointer;
+      display: inline-block;
+    }
+    @media (min-width: 750px) {
+      .product-price {
+        margin-bottom: 1rem;
+      }
+    }
+    .product-thumbs {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .product-thumbs img {
+      width: 80px;
+      height: auto;
+      cursor: pointer;
+      border: 1px solid #ddd;
+    }
+    .product-gallery {
+      position: relative;
+    }
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      color: #666;
+      border: none;
+      font-size: 2rem;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+    }
+    .nav-arrow.prev {
+      left: 0;
+    }
+    .nav-arrow.next {
+      right: 0;
+    }
+    .nav-arrow:hover {
+      color: #000;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const gallery = document.querySelector('.product-gallery .main-img');
+      const thumbs = Array.from(document.querySelectorAll('.product-thumbs img'));
+      let index = 0;
+      thumbs.forEach((el, i) => {
+        el.addEventListener('click', () => {
+          gallery.src = el.dataset.src;
+          index = i;
+        });
+      });
+
+      const prev = document.querySelector('.nav-arrow.prev');
+      const next = document.querySelector('.nav-arrow.next');
+      prev.addEventListener('click', () => {
+        index = (index - 1 + thumbs.length) % thumbs.length;
+        gallery.src = thumbs[index].dataset.src;
+      });
+      next.addEventListener('click', () => {
+        index = (index + 1) % thumbs.length;
+        gallery.src = thumbs[index].dataset.src;
+      });
+      gallery.addEventListener('mouseenter', () => {
+        thumbs[index].classList.add('active');
+      });
+    });
+  </script>
+</section>
+{% schema %}{"name":"Product minimal","tag":"section","class":"section-product-minimal","settings":[]}{% endschema %}

@@ -1,0 +1,188 @@
+{% comment %}
+  Ultra-minimal header: logo (or store name) on the left, cart icon on the right.
+  No navigation, no search, no announcement bar.
+{% endcomment %}
+
+<header class="minimal-header page-width">
+  <div class="header-inner">
+    <a href="{{ routes.root_url }}" class="site-logo focus-inset">
+      <img
+        src="{{ 'runpod-logo.svg' | asset_url }}"
+        alt="{{ shop.name }}"
+        class="logo-img"
+        loading="lazy"
+        width="64"
+        height="64"
+      >
+    </a>
+
+    <a href="{{ routes.cart_url }}" class="cart-link focus-inset">
+      {%- if cart == empty -%}
+        <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
+      {%- else -%}
+        <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
+      {%- endif -%}
+      {%- if cart.item_count > 0 -%}
+        <span class="cart-count">{{ cart.item_count }}</span>
+      {%- endif -%}
+    </a>
+
+    <button class="mobile-menu-btn" aria-label="Menu"></button>
+    <nav class="mobile-menu">
+      <a href="/">ALL</a>
+      <a href="/products/runpod-hat">HAT</a>
+    </nav>
+  </div>
+
+  <style>
+    .minimal-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 1rem 0;
+    }
+
+    .minimal-header .logo-img {
+      max-height: 64px;
+      height: auto;
+      width: auto;
+    }
+
+    .minimal-header .cart-link {
+      position: absolute;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .minimal-header .cart-count {
+      position: absolute;
+      top: -0.25rem;
+      right: -0.5rem;
+      background: #000;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      line-height: 1;
+      padding: 0.1rem 0.35rem;
+    }
+
+    .minimal-header .cart-link .svg-wrapper {
+      width: 56px;
+      height: 56px;
+      display: inline-block;
+    }
+
+    .minimal-header .cart-link .svg-wrapper svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      position: absolute;
+      left: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2rem;
+      background: none;
+      border: none;
+      color: #000;
+      cursor: pointer;
+    }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      font-size: 2rem;
+      z-index: 2000;
+    }
+    .mobile-menu a {
+      text-decoration: none;
+      color: #000;
+      font-size: 1.2rem;
+    }
+    .mobile-menu.open {
+      display: flex;
+    }
+    .mobile-menu-btn.open::after {
+      content: '\2715'; /* X */
+    }
+    .mobile-menu-btn::after {
+      content: '\2630'; /* hamburger */
+    }
+    .mobile-menu-btn {
+      font-size: 2rem;
+      background: none;
+      border: none;
+      color: #000;
+      position: absolute;
+      left: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2100;
+    }
+    .mobile-menu-btn span {
+      display: none;
+    }
+
+    @media (max-width: 750px) {
+      .desktop-only {
+        display: none;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.querySelector('.mobile-menu-btn');
+      const menu = document.querySelector('.mobile-menu');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          menu.classList.toggle('open');
+          btn.classList.toggle('open');
+        });
+      }
+
+      const select = document.querySelector('.variant-select');
+      if (select) {
+        select.addEventListener('change', (e) => {
+          const opt = select.options[select.selectedIndex].text.toLowerCase();
+          const thumbs = document.querySelectorAll('.variant-thumb');
+          const gallery = document.querySelector('.product-gallery');
+          thumbs.forEach((t) => {
+            t.style.display = (
+              opt.includes('black') ? t.alt.includes('stealth') : opt.includes('beige') ? t.alt.includes('fun') : true
+            )
+              ? ''
+              : 'none';
+          });
+          const firstVisible = Array.from(thumbs).find((t) => t.style.display !== 'none');
+          if (firstVisible) {
+            gallery.src = firstVisible.dataset.src;
+          }
+        });
+      }
+    });
+  </script>
+</header>
+
+{% schema %}
+{
+  "name": "Minimal header",
+  "tag": "section",
+  "class": "section-minimal-header",
+  "settings": []
+}
+{% endschema %}

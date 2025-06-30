@@ -1,0 +1,117 @@
+{% comment %}
+  Minimal All Products Grid Section
+  Displays every product in the store (collections.all) in a simple responsive grid.
+  Only uses the featured image, title, and price, each linking to the product page.
+{% endcomment %}
+
+<section class="all-products">
+  <div class="products-grid page-width">
+    {%- for product in collections.all.products -%}
+      <a href="{{ product.url }}" class="product-card">
+        <div class="image-wrapper">
+          {%- if product.featured_media -%}
+            <img
+              src="{{ product.featured_media | image_url: width: 600 }}"
+              alt="{{ product.featured_media.alt | default: product.title | escape }}"
+              loading="lazy"
+              width="600"
+              height="600"
+            >
+          {%- endif -%}
+          <div class="overlay">
+            <h3 class="product-title">{{ product.title }}</h3>
+            <span class="product-price">{{ product.price | money }}</span>
+          </div>
+        </div>
+        <div class="mobile-info">
+          <h3 class="product-title">{{ product.title }}</h3>
+          <span class="product-price">{{ product.price | money }}</span>
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+
+  <style>
+    .all-products .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 2rem;
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+
+    .all-products .product-card {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.5rem;
+      position: relative;
+    }
+
+    .all-products .product-card img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .all-products .product-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .all-products .product-price {
+      font-size: 1.3rem;
+    }
+
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.7);
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .overlay .product-title,
+    .overlay .product-price {
+      color: #000;
+    }
+    .product-card:hover .overlay {
+      opacity: 1;
+    }
+    .product-card:hover img {
+      filter: grayscale(100%);
+    }
+    .mobile-info {
+      display: none;
+    }
+    @media (max-width: 750px) {
+      .overlay {
+        display: none;
+      }
+      .mobile-info {
+        display: block;
+      }
+    }
+  </style>
+</section>
+
+{% schema %}
+{
+  "name": "All products",
+  "tag": "section",
+  "class": "section-all-products",
+  "settings": []
+}
+{% endschema %}
