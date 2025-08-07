@@ -29,8 +29,9 @@
 
     <button class="mobile-menu-btn" aria-label="Menu"></button>
     <nav class="mobile-menu">
-      <a href="/">ALL</a>
-      <a href="/products/runpod-hat">HAT</a>
+      <a href="/" class="mobile-nav-link{% if request.path == '/' %} active{% endif %}">ALL</a>
+      <a href="/collections/hats" class="mobile-nav-link{% if collection.handle == 'hats' %} active{% endif %}">HATS</a>
+      <a href="/collections/tees" class="mobile-nav-link{% if collection.handle == 'tees' %} active{% endif %}">TEES</a>
     </nav>
   </div>
 
@@ -60,19 +61,21 @@
 
     .minimal-header .cart-count {
       position: absolute;
-      top: -0.25rem;
+      top: -0.5rem;
       right: -0.5rem;
       background: #000;
       color: #fff;
       border-radius: 50%;
-      font-size: 0.7rem;
-      line-height: 1;
-      padding: 0.1rem 0.35rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      padding: 0.2rem 0.5rem;
+      min-width: 24px;
+      text-align: center;
     }
 
     .minimal-header .cart-link .svg-wrapper {
-      width: 56px;
-      height: 56px;
+      width: 80px;
+      height: 80px;
       display: inline-block;
     }
 
@@ -105,10 +108,17 @@
       font-size: 2rem;
       z-index: 2000;
     }
-    .mobile-menu a {
+    .mobile-menu .mobile-nav-link {
       text-decoration: none;
       color: #000;
       font-size: 1.2rem;
+      padding: 1rem 2rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    .mobile-menu .mobile-nav-link.active {
+      background: #000;
+      color: #fff;
     }
     .mobile-menu.open {
       display: flex;

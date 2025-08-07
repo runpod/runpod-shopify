@@ -10,7 +10,7 @@
       <table class="cart-items">
         <thead>
           <tr>
-            <th>Product</th>
+            <th colspan="2">Product</th>
             <th>Price</th>
             <th>Quantity</th>
             <th>Total</th>
@@ -20,6 +20,18 @@
         <tbody>
           {%- for item in cart.items -%}
             <tr class="cart-item" id="CartItem-{{ item.index | plus: 1 }}">
+              <td class="cart-item__image">
+                {%- if item.image -%}
+                  <img
+                    src="{{ item.image | image_url: width: 100 }}"
+                    alt="{{ item.image.alt | escape }}"
+                    width="60"
+                    height="60"
+                    loading="lazy"
+                    class="cart-image"
+                  >
+                {%- endif -%}
+              </td>
               <td class="cart-item__details">
                 <a href="{{ item.url }}" class="cart-item__name">{{ item.product.title | escape }}</a>
                 {%- if item.product.has_only_default_variant == false or item.properties.size != 0 -%}
@@ -107,6 +119,16 @@
     .cart-items td {
       padding: 1.5rem 0;
       border-bottom: 1px solid #eee;
+    }
+    .cart-item__image {
+      width: 80px;
+      vertical-align: top;
+    }
+    .cart-image {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 4px;
     }
     .cart-item__name {
       text-decoration: none;

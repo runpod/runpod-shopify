@@ -1,14 +1,15 @@
 {% comment %}Fixed left sidebar navigation{% endcomment %}
 <nav class="sidebar-nav" aria-label="Sidebar navigation">
   <ul>
-    <li><a href="/" class="nav-link">ALL</a></li>
-    <li><a href="/products/runpod-hat" class="nav-link">HAT</a></li>
+    <li><a href="/" class="nav-link{% if request.path == '/' %} active{% endif %}">ALL</a></li>
+    <li><a href="/collections/hats" class="nav-link{% if collection.handle == 'hats' %} active{% endif %}">HATS</a></li>
+    <li><a href="/collections/tees" class="nav-link{% if collection.handle == 'tees' %} active{% endif %}">TEES</a></li>
   </ul>
   <style>
     .sidebar-nav {
       position: fixed;
       top: 8rem;
-      left: calc((100vw - var(--page-width)) / 2 - 4rem);
+      left: calc((100vw - var(--page-width)) / 2 - 6rem);
       transform: none;
       display: flex;
       flex-direction: column;
@@ -29,6 +30,14 @@
       font-weight: 600;
       font-size: 1.4rem;
       letter-spacing: 0.05em;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      display: block;
+    }
+    .sidebar-nav .nav-link.active {
+      background: #000;
+      color: #fff;
     }
     @media (max-width: 750px) {
       .sidebar-nav {

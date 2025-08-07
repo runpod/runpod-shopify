@@ -1,14 +1,14 @@
 {% comment %}
-  Minimal All Products Grid Section with Product Type Filter
-  Displays every product in the store (collections.all) in a simple responsive grid.
-  Includes a sidebar filter for product types.
+  Minimal Collection Grid Section
+  Displays products from the current collection in a simple responsive grid.
+  Matches the homepage layout exactly.
 {% endcomment %}
 
 <section class="all-products">
   <div class="products-container page-width">
     <!-- Products Grid -->
     <div class="products-grid">
-      {%- for product in collections.all.products -%}
+      {%- for product in collection.products -%}
         <a
           href="{{ product.url }}"
           class="product-card"
@@ -155,9 +155,9 @@
 
 {% schema %}
 {
-  "name": "All products",
+  "name": "Collection minimal",
   "tag": "section",
-  "class": "section-all-products",
+  "class": "section-collection-minimal",
   "settings": []
 }
 {% endschema %}

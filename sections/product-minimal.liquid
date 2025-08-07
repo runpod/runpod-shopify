@@ -1,20 +1,35 @@
 {% comment %}Minimal product page section{% endcomment %}
 <section class="product-minimal page-width">
   <div class="product-wrapper">
-    <div class="product-gallery">
-      {%- for media in product.media -%}
-        {%- if forloop.first -%}
+    <div class="product-gallery-container">
+      <div class="product-gallery">
+        {%- for media in product.media -%}
+          {%- if forloop.first -%}
+            <img
+              src="{{ media | image_url: width: 800 }}"
+              alt="{{ product.title | escape }}"
+              width="800"
+              height="{{ 800 | divided_by: media.aspect_ratio }}"
+              class="main-img"
+              id="main-product-image"
+            >
+          {%- endif -%}
+        {%- endfor -%}
+        <button class="nav-arrow prev" aria-label="Previous">&#10094;</button>
+        <button class="nav-arrow next" aria-label="Next">&#10095;</button>
+      </div>
+      <div class="product-thumbs">
+        {%- for media in product.media -%}
           <img
-            src="{{ media | image_url: width: 800 }}"
+            src="{{ media | image_url: width: 120 }}"
             alt="{{ product.title | escape }}"
-            width="800"
-            height="{{ 800 | divided_by: media.aspect_ratio }}"
-            class="main-img"
+            data-src="{{ media | image_url: width: 800 }}"
+            width="80"
+            height="80"
+            onclick="setMainImage(this)"
           >
-        {%- endif -%}
-      {%- endfor -%}
-      <button class="nav-arrow prev" aria-label="Previous">&#10094;</button>
-      <button class="nav-arrow next" aria-label="Next">&#10095;</button>
+        {%- endfor -%}
+      </div>
     </div>
     <div class="product-info">
       <h1 class="product-title">{{ product.title }}</h1>
@@ -26,6 +41,8 @@
             {%- for variant in product.variants -%}
               <option
                 value="{{ variant.id }}"
+                data-image-src="{{ variant.featured_image | image_url: width: 800 }}"
+                data-image-alt="{{ variant.featured_image.alt | default: variant.title | escape }}"
                 {% if variant == product.selected_or_first_available_variant %}
                   selected
                 {% endif %}
@@ -39,19 +56,126 @@
         {%- endif -%}
         <button type="submit" class="add-to-cart">Add to cart</button>
       {% endform %}
-      <div class="product-description rte">{{ product.description }}</div>
+      <div class="product-description">
+        {%- assign description_parts = product.description | split: 'Size Chart' -%}
+        {%- if description_parts.size > 1 -%}
+          <!-- Product Info -->
+          <div class="product-info-text">
+            {{ description_parts[0] | strip | newline_to_br }}
+          </div>
+
+          <!-- Size Chart Toggle -->
+          <details class="size-chart-toggle">
+            <summary class="size-chart-header">
+              <span>Size Chart</span>
+              <span class="toggle-icon">+</span>
+            </summary>
+            <div class="size-chart-content">
+              <div class="size-chart-table">
+                {%- assign chart_content = description_parts[1] | strip -%}
+                {%- assign chart_rows = chart_content | split: '&#9;' -%}
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th colspan="2">XS</th>
+                      <th colspan="2">S</th>
+                      <th colspan="2">M</th>
+                      <th colspan="2">L</th>
+                      <th colspan="2">XL</th>
+                      <th colspan="2">2XL</th>
+                    </tr>
+                    <tr>
+                      <th></th>
+                      <th>inch</th>
+                      <th>cm</th>
+                      <th>inch</th>
+                      <th>cm</th>
+                      <th>inch</th>
+                      <th>cm</th>
+                      <th>inch</th>
+                      <th>cm</th>
+                      <th>inch</th>
+                      <th>cm</th>
+                      <th>inch</th>
+                      <th>cm</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Chest</strong></td>
+                      <td>19.5</td>
+                      <td>49.5</td>
+                      <td>20.3</td>
+                      <td>51.5</td>
+                      <td>21.1</td>
+                      <td>53.5</td>
+                      <td>21.9</td>
+                      <td>55.5</td>
+                      <td>22.6</td>
+                      <td>57.5</td>
+                      <td>23.4</td>
+                      <td>59.5</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Length</strong></td>
+                      <td>25.6</td>
+                      <td>65</td>
+                      <td>26.4</td>
+                      <td>67</td>
+                      <td>27.2</td>
+                      <td>69</td>
+                      <td>28.0</td>
+                      <td>71</td>
+                      <td>28.7</td>
+                      <td>73</td>
+                      <td>29.5</td>
+                      <td>75</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Shoulder</strong></td>
+                      <td>17.3</td>
+                      <td>44</td>
+                      <td>18.1</td>
+                      <td>46</td>
+                      <td>18.9</td>
+                      <td>48</td>
+                      <td>19.7</td>
+                      <td>50</td>
+                      <td>20.5</td>
+                      <td>52</td>
+                      <td>21.3</td>
+                      <td>54</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Sleeve length</strong></td>
+                      <td>7.8</td>
+                      <td>19.7</td>
+                      <td>8.0</td>
+                      <td>20.2</td>
+                      <td>8.1</td>
+                      <td>20.7</td>
+                      <td>8.3</td>
+                      <td>21.2</td>
+                      <td>8.5</td>
+                      <td>21.7</td>
+                      <td>8.7</td>
+                      <td>22.2</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+        {%- else -%}
+          <!-- Regular product description without size chart -->
+          <div class="product-info-text">
+            {{ product.description | strip | newline_to_br }}
+          </div>
+        {%- endif -%}
+      </div>
     </div>
-  </div>
-  <div class="product-thumbs">
-    {%- for media in product.media -%}
-      <img
-        src="{{ media | image_url: width: 160 }}"
-        data-src="{{ media | image_url: width: 800 }}"
-        alt="{{ product.title | escape }} thumbnail"
-        width="80"
-        height="80"
-      >
-    {%- endfor -%}
   </div>
   <style>
     .product-wrapper {
@@ -67,9 +191,15 @@
     .product-gallery img {
       width: 100%;
       height: auto;
+      object-fit: contain;
+      max-height: 500px;
+    }
+    .product-gallery-container {
+      display: flex;
+      flex-direction: column;
     }
     @media (min-width: 750px) {
-      .product-gallery {
+      .product-gallery-container {
         max-width: 400px;
       }
     }
@@ -82,12 +212,24 @@
       margin: 0 0 1.5rem;
     }
     .variant-select {
-      padding: 0.6rem;
-      font-size: 1rem;
-      margin-right: 1rem;
+      padding: 0.8rem;
+      font-size: 1.6rem;
       border: 1px solid #ccc;
       border-radius: 4px;
+      width: 100%;
+      margin-bottom: 1rem;
     }
+
+    /* Make dropdown much bigger on mobile */
+    @media (max-width: 750px) {
+      .variant-select {
+        font-size: 2.2rem;
+        padding: 1.5rem;
+        min-height: 6rem;
+        line-height: 1.4;
+      }
+    }
+
     .add-to-cart {
       padding: 0.75rem 1.5rem;
       font-size: 1rem;
@@ -110,9 +252,11 @@
     }
     .product-thumbs img {
       width: 80px;
-      height: auto;
+      height: 80px;
+      object-fit: cover;
       cursor: pointer;
       border: 1px solid #ddd;
+      border-radius: 4px;
     }
     .product-gallery {
       position: relative;
@@ -138,12 +282,127 @@
     .nav-arrow:hover {
       color: #000;
     }
+
+    /* Product Description Styling */
+    .product-description {
+      margin-top: 2rem;
+    }
+
+    .product-info-text {
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Size Chart Toggle */
+    .size-chart-toggle {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+
+    .size-chart-header {
+      padding: 1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f9f9f9;
+      font-weight: 600;
+      list-style: none;
+      user-select: none;
+    }
+
+    .size-chart-header:hover {
+      background: #f0f0f0;
+    }
+
+    .toggle-icon {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .size-chart-toggle[open] .toggle-icon {
+      transform: rotate(45deg);
+    }
+
+    .size-chart-content {
+      padding: 1rem;
+      border-top: 1px solid #ddd;
+    }
+
+    .size-chart-table {
+      overflow-x: auto;
+    }
+
+    .size-chart-table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1.2rem;
+    }
+
+    .size-chart-table th,
+    .size-chart-table td {
+      padding: 0.5rem;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+
+    .size-chart-table th {
+      background: #f5f5f5;
+      font-weight: 600;
+    }
+
+    .size-chart-table td:first-child {
+      text-align: left;
+      background: #f9f9f9;
+    }
+
+    @media (max-width: 750px) {
+      .size-chart-table {
+        font-size: 0.9rem;
+      }
+
+      .size-chart-table th,
+      .size-chart-table td {
+        padding: 0.2rem 0.1rem;
+        font-size: 0.8rem;
+      }
+
+      .size-chart-table th:first-child,
+      .size-chart-table td:first-child {
+        min-width: 60px;
+        font-size: 0.7rem;
+      }
+
+      /* Make table scrollable horizontally on mobile */
+      .size-chart-content {
+        padding: 0.5rem;
+      }
+
+      .size-chart-table {
+        overflow-x: scroll;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .size-chart-table table {
+        min-width: 500px;
+        font-size: 0.8rem;
+      }
+    }
   </style>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const gallery = document.querySelector('.product-gallery .main-img');
       const thumbs = Array.from(document.querySelectorAll('.product-thumbs img'));
       let index = 0;
+
+      // Function to set main image
+      window.setMainImage = function (thumb) {
+        gallery.src = thumb.dataset.src;
+        index = thumbs.indexOf(thumb);
+      };
+
+      // Handle thumbnail clicks
       thumbs.forEach((el, i) => {
         el.addEventListener('click', () => {
           gallery.src = el.dataset.src;
@@ -151,19 +410,44 @@
         });
       });
 
+      // Handle navigation arrows
       const prev = document.querySelector('.nav-arrow.prev');
       const next = document.querySelector('.nav-arrow.next');
-      prev.addEventListener('click', () => {
-        index = (index - 1 + thumbs.length) % thumbs.length;
-        gallery.src = thumbs[index].dataset.src;
-      });
-      next.addEventListener('click', () => {
-        index = (index + 1) % thumbs.length;
-        gallery.src = thumbs[index].dataset.src;
-      });
-      gallery.addEventListener('mouseenter', () => {
-        thumbs[index].classList.add('active');
-      });
+      if (prev && next) {
+        prev.addEventListener('click', () => {
+          index = (index - 1 + thumbs.length) % thumbs.length;
+          gallery.src = thumbs[index].dataset.src;
+        });
+        next.addEventListener('click', () => {
+          index = (index + 1) % thumbs.length;
+          gallery.src = thumbs[index].dataset.src;
+        });
+      }
+
+      // Handle variant selection - UPDATE IMAGE WHEN VARIANT CHANGES
+      const variantSelect = document.querySelector('#variant-select');
+      if (variantSelect) {
+        variantSelect.addEventListener('change', (e) => {
+          // Update URL with variant
+          const url = new URL(window.location);
+          url.searchParams.set('variant', e.target.value);
+          window.history.replaceState({}, '', url);
+
+          // Get the selected option's image data
+          const selectedOption = e.target.options[e.target.selectedIndex];
+          const imageSrc = selectedOption.dataset.imageSrc;
+          const imageAlt = selectedOption.dataset.imageAlt;
+
+          // Update main image if variant has an image
+          if (imageSrc && imageSrc !== '') {
+            const mainImage = document.querySelector('#main-product-image');
+            if (mainImage) {
+              mainImage.src = imageSrc;
+              mainImage.alt = imageAlt;
+            }
+          }
+        });
+      }
     });
   </script>
 </section>
